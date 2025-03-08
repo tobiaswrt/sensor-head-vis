@@ -5,6 +5,7 @@ from gpio_config import *
 init_gpio()
 
 print("Warte auf Sensor...")
+led_start()
 time.sleep(2)
 
 try:
