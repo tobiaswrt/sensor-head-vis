@@ -1,1 +1,1 @@
-# sensor-head-vis
+# Projekt: Sensor Head Visualisation
