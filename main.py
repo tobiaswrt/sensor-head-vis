@@ -1,4 +1,4 @@
-import RPi.GPIO as GPIO
+import RPi.GPIO as GPIO # type: ignore
 import time
 from gpio_config import *
 
@@ -10,6 +10,7 @@ time.sleep(2)
 try:
     while True:
 
+        led_blink()
         # Trigger-Puls senden
         GPIO.output(TRIG, True)
         time.sleep(0.00001)
