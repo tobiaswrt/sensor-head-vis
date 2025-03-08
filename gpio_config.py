@@ -28,7 +28,7 @@ def cleanup_gpio():
 
 def led_blink():
     GPIO.output(LED_1, GPIO.HIGH)
-    time.sleep(2)
+    time.sleep(1)
     GPIO.output(LED_1, GPIO.LOW)
 
 def led_start():
