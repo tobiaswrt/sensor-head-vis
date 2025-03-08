@@ -2,6 +2,7 @@ import RPi.GPIO as GPIO
 import time
 
 GPIO.setmode(GPIO.BCM)  # GPIO-Pins nach BCM-Nummerierung
+
 TRIG = 23               # GPIO23 (Pin 16)
 ECHO = 17               # GPIO17 (Pin 11)
 
@@ -9,8 +10,17 @@ GPIO.setup(TRIG, GPIO.OUT)  # Trigger als Ausgang
 GPIO.setup(ECHO, GPIO.IN)   # Echo als Eingang
 GPIO.output(TRIG, False)    # Trigger initial auf LOW setzen
 
+LED_1 = 27
+
+GPIO.setup(LED_1, GPIO.OUT)
+
 print("Warte auf Sensor...")
 time.sleep(2)
+
+def led_blink ():
+    GPIO.output(LED_1, GPIO.HIGH)
+    time.sleep(4)
+    GPIO.output(LED_1, GPIO.LOW)
 
 try:
     while True:
@@ -21,6 +31,7 @@ try:
         GPIO.output(TRIG, False)
 
         # Zeitmessung starten
+        led_blink()
         pulse_start = time.time()
         timeout = pulse_start + 0.1
 
