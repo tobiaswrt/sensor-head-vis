@@ -21,6 +21,8 @@ center_y = SCREEN_HEIGHT // 2
 radius = min(SCREEN_WIDTH, SCREEN_HEIGHT) * 0.5
 line_width = 2
 
+font = pygame.font.Font(None, 36)
+
 run = True
 while run:
     for event in pygame.event.get():
@@ -50,6 +52,18 @@ while run:
         end_y = center_y - radius * math.sin(angle)
 
         pygame.draw.line(screen, GREEN, (center_x, center_y), (end_x, end_y), 1)
+
+        pygame.draw.circle(screen, GREEN, (int(end_x)), int(end_y), 2)
+
+        degrees = int(angle * 180 / math.pi)
+
+        text = font.render(f"{degrees} °", True, GREEN)
+
+        text_offset = 20
+        text_x = center_x + (radius + text_offset) * math.cos(angle) - text.get_width() / 2
+        text_y = center_y + (radius + text_offset) * math.sin(angle) - text.get_width() / 2
+
+        screen.blit(text, (text_x, text_y))
 
     pygame.draw.circle(screen, GREEN, (center_x, center_y), 2)
 
