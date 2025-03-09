@@ -3,6 +3,7 @@ from gpio_config import *
 import RPi.GPIO as GPIO
 import pygame
 import sys
+import time
 import math
 import threading
 
