@@ -8,4 +8,7 @@
 - LED's
 
 # Ziel
-Das Ziel ist die Erstellung eines beweglichen Scanners der mit einer Visualisierung eines Sonars Objekte in der Umgebung anzeigt
+Das Ziel ist die Erstellung eines beweglichen Scanners der mit einer Visualisierung eines Sonars Objekte in der Umgebung anzeigt und dessen Distanz
+
+# Aufbau
+[Ultraschall-Sensor-Schaltung_Steckplatine.pdf](https://github.com/user-attachments/files/19150460/Ultraschall-Sensor-Schaltung_Steckplatine.pdf)
