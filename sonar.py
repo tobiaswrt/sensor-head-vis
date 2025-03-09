@@ -21,7 +21,7 @@ center_y = SCREEN_HEIGHT // 2 + SCREEN_HEIGHT // 4
 radius = min(SCREEN_WIDTH, SCREEN_HEIGHT) * 0.45
 line_width = 2
 
-font = pygame.font.SysFont("Arial", 16)
+font = pygame.font.Font(None, 16)
 
 run = True
 while run:
