@@ -42,6 +42,15 @@ while run:
 
     pygame.draw.arc(screen, GREEN, rect, 0, math.pi, line_width)
 
+    angles = [0, math.pi/4, math.pi/2, 3*math.py/4, math.pi]
+
+    for angle in angles:
+
+        end_x = center_x + radius * math.cos(angle)
+        end_y = center_y - radius * math.sin(angle)
+
+        pygame.draw.line(screen, GREEN, (center_x, center_y), (end_x, end_y), 1)
+
     pygame.draw.circle(screen, GREEN, (center_x, center_y), 2)
 
     pygame.display.flip()
