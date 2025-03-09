@@ -26,16 +26,18 @@ font = pygame.font.SysFont("Arial", 24)
 font_small = pygame.font.SysFont("Arial", 16)
 
 # Animations Parameter
-scan_angle = 90                         # Startwinkel in Grad
-scan_speed = 3                          # Geschwindigkeit der Animation
 scan_active = False
-scan_pulse_distance = 0                 # Distanz zum Mittelpunkt
-pulse_speed = 5                         # Geschwindigkeit des Pulses
-max_distance = 400                      # Maximale Entfernung
-distance_scale = radius / max_distance  # Skalierungsfaktor für die Anzeige
+wave_radius = 0
+wave_speed = 5
+max_distance = 400
+distance_scale = radius / max_distance
+
+waves = []
+wave_interval = 40
 
 # Simutlierter Wert (später durch echten HC-SR04 Wert ersetzen)
 current_distance = 150 # in cm
+detected_point = None
 
 run = True
 while run:
@@ -51,7 +53,7 @@ while run:
                  # Scan starten / stoppen
                 scan_active = not scan_active
                 if scan_active:
-                    scan_pulse_distance = 0
+                    waves = [[0, 255]]
 
             # Distanz mit Pfeiltasten ändern
             if event.key == pygame.K_UP:
@@ -122,38 +124,41 @@ while run:
 
     # Animation des Scanvorgangs
     if scan_active:
-        scan_rad = deg_to_rad(scan_angle)
+        new_waves = []
+        for wave in waves:
+            wave_radius, alpha = wave
 
-        # Zeichne Scanlinie vom Mittelpunkt aus
-        scan_end_x = center_x + radius * math.cos(scan_rad)
-        scan_end_y = center_y - radius * math.sin(scan_rad)
-        pygame.draw.line(screen, GREEN, (center_x, center_y), (scan_end_x, scan_end_y), 1)
+            wave_color = (0, 255, 255, alpha)
 
-        # Puls Animation
-        if scan_pulse_distance < radius:
-            # Zeichne Puls als kleinen Kreis auf Scan Linie
-            pulse_x = center_x + scan_pulse_distance * math.cos(scan_rad)
-            pulse_y = center_y - scan_pulse_distance * math.sin(scan_rad)
-            pygame.draw.circle(screen, GREEN, (int(pulse_x), int(pulse_y)), 4)
-            scan_pulse_distance += pulse_speed
-        else:
-            # Wenn Puls Ende erreicht. akzuelle Distanz anzeigen
-            distance_x = center_x + current_distance * distance_scale * math.cos(scan_rad)
-            distance_y = center_y - current_distance * distance_scale * math.sin(scan_rad)
-            pygame.draw.circle(screen, GREEN, (int(distance_x), int(distance_y)), 8)
+            wave_surface = pygame.Surface((wave_radius * 2, wave_radius * 2), pygame.SRCALPHA)
+            pygame.draw.arc(screen, wave_surface, wave_color, (0, 0, wave_radius * 2, wave_radius * 2), 0, math.pi, 2)
 
-            # Nach kurzer Pause neuen Scan starten
-            if scan_pulse_distance > radius + 50: # kurze Verzögerung
-                scan_pulse_distance = 0
-                scan_angle = (scan_angle + scan_speed) % 180 # Winkel aktualisieren
+            screen.blit(wave_surface, (center_x - wave_radius, center_y - wave_radius))
 
-        # AKtuellen Winkel anzeigen
-        angle_text = font.render(f"Winkel: {scan_angle}°", True, GREEN)
-        screen.blit(angle_text, (50,50))
+            wave_radius  += wave_speed
+            alpha = max(0, alpha - 5)
 
-        # Aktuelle Distanz anzeigen
-        distance_text = font.render(f"Distanz: {current_distance} cm", True, GREEN)
-        screen.blit(distance_text, (50,100))
+            if alpha > 0 and wave_radius < radius:
+                new_waves.append([wave_radius, alpha])
+
+            if abs(wave_radius - current_distance * distance_scale) < wave_speed and alpha > 150:
+                angle_rad = math.pi/2
+                detected_point = (
+                    center_x + current_distance * distance_scale * math.cos(angle_rad),
+                    center_y - current_distance * distance_scale * math.sin(angle_rad)
+                )
+
+        if not waves or waves [0][0] > wave_interval:
+            new_waves.insert(0, [0, 255])
+
+        waves = new_waves
+
+        if detected_point:
+            pygame.draw.circle(screen, GREEN, (int(detected_point[0]), int(detected_point[1])), 8)
+
+        distance_text = font.render(f"Distanz: {current_distance} cm", True, BLACK)
+        screen.blit(distance_text, (50, 50))
+
     else:
         # Anzeige, dass Scan pausiert ist
         pause_text = font.render("Drücke LEERTASTE zum Scannen", True, GREEN)
