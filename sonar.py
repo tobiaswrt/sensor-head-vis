@@ -16,9 +16,9 @@ BLACK = (0, 0, 0)
 clock = pygame.time.Clock()
 
 center_x = SCREEN_WIDTH // 2
-center_y = SCREEN_HEIGHT // 2
+center_y = SCREEN_HEIGHT // 2 + SCREEN_HEIGHT // 4
 
-radius = min(SCREEN_WIDTH, SCREEN_HEIGHT) * 0.5
+radius = min(SCREEN_WIDTH, SCREEN_HEIGHT) * 0.45
 line_width = 2
 
 font = pygame.font.Font(None, 36)
@@ -45,8 +45,9 @@ while run:
     pygame.draw.arc(screen, GREEN, rect, 0, math.pi, line_width)
 
     angles = [0, math.pi/4, math.pi/2, 3*math.pi/4, math.pi]
+    angle_labels = ["0°", "45°", "90°", "135°", "180°"]
 
-    for angle in angles:
+    for i, angle in enumerate(angles):
 
         end_x = center_x + radius * math.cos(angle)
         end_y = center_y - radius * math.sin(angle)
@@ -55,13 +56,22 @@ while run:
 
         pygame.draw.circle(screen, GREEN, (int(end_x), int(end_y)), 2)
 
-        degrees = int(angle * 180 / math.pi)
+        text = font.render(angle_labels[i], True, GREEN)
 
-        text = font.render(f"{degrees} °", True, GREEN)
+        text_offset = 25
 
-        text_offset = 20
-        text_x = center_x + (radius + text_offset) * math.cos(angle) - text.get_width() / 2
-        text_y = center_y + (radius + text_offset) * math.sin(angle) - text.get_width() / 2
+        if angle == 0 or angle == math.pi:
+            text_x = end_x - text.get_width() // 2
+            text_y = end_y + text_offset
+        elif angle == math.pi/2:
+            text_x = end_x - text.get_width() // 2
+            text_y = end_y - text_offset - text.get_height()
+        elif angle == math.pi/4:
+            text_x = end_x - text.get_width() // 2
+            text_y = end_y - text_offset - text.get_height() // 2
+        else:
+            text_x = end_x - text_offset - text.get_width()
+            text_y = end_y - text_offset - text.get_width() // 2
 
         screen.blit(text, (text_x, text_y))
 
