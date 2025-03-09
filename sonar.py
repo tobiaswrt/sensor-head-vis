@@ -19,7 +19,7 @@ center_x = SCREEN_WIDTH // 2
 center_y = SCREEN_HEIGHT // 2
 
 radius = min(SCREEN_WIDTH, SCREEN_HEIGHT) * 0.45
-line_width = 4
+line_width = 2
 
 run = True
 while run:
