@@ -131,7 +131,7 @@ while run:
             wave_color = (0, 255, 255, alpha)
 
             wave_surface = pygame.Surface((wave_radius * 2, wave_radius * 2), pygame.SRCALPHA)
-            pygame.draw.arc(screen, wave_surface, wave_color, (0, 0, wave_radius * 2, wave_radius * 2), 0, math.pi, 2)
+            pygame.draw.arc(wave_surface, wave_color, (0, 0, wave_radius * 2, wave_radius * 2), 0, math.pi, 2)
 
             screen.blit(wave_surface, (center_x - wave_radius, center_y - wave_radius))
 
