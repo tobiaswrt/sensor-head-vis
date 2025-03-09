@@ -1,13 +1,12 @@
 from functions import *
 from gpio_config import *
 import RPi.GPIO as GPIO
-import time
 import pygame
 import sys
 import math
+import threading
 
 # Initialisierung
-init_gpio()
 pygame.init()
 
 SCREEN_WIDTH = 800
@@ -40,150 +39,159 @@ waves = []  # Liste von [radius, alpha] für jede Welle
 wave_interval = 80  # Abstand zwischen den Wellen
 
 # Simutlierter Wert (später durch echten HC-SR04 Wert ersetzen)
-current_distance = 150 # in cm
+current_distance = 0 # in cm
+current_angle_rad = math.pi/2
 detected_point = None
 
+running = True
+
 # Hauptschleife
-run = True
-while run:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            run = False
-        
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_ESCAPE:
+try:
+    init_gpio()
+
+    # Sensor-Thread starten
+    sensor = threading.Thread(target = sensor_thread)
+    sensor.daemon = True    # Thread endet, wenn Hauptprogramm endet
+    sensor.start() 
+
+    run = True
+    while run:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
                 run = False
+            
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    run = False
 
-            if event.key == pygame.K_SPACE:
-                 # Scan starten / stoppen
-                scan_active = not scan_active
-                if scan_active:
-                    waves = [[0, 255]]
+                if event.key == pygame.K_SPACE:
+                    # Scan starten / stoppen
+                    scan_active = not scan_active
+                    if scan_active:
+                        waves = [[0, 255]]
+        
+        screen.fill(BLACK)
 
-            # Distanz mit Pfeiltasten ändern
-            if event.key == pygame.K_UP:
-                current_distance = min(current_distance + 10, max_distance)
-            if event.key == pygame.K_DOWN:
-                current_distance = max(current_distance - 10, 0)
+        rect = pygame.Rect(
+            center_x - radius,
+            center_y - radius,
+            radius * 2,
+            radius * 2
+        )
 
-    
-    screen.fill(BLACK)
+        # Halbkreis zeichnen
+        pygame.draw.arc(screen, GREEN, rect, 0, math.pi, line_width)
 
-    rect = pygame.Rect(
-        center_x - radius,
-        center_y - radius,
-        radius * 2,
-        radius * 2
-    )
+        # Winkel definieren
+        angles = [0, math.pi/4, math.pi/2, 3*math.pi/4, math.pi]
+        angle_labels = ["0°", "45°", "90°", "135°", "180°"]
 
-    # Halbkreis zeichnen
-    pygame.draw.arc(screen, GREEN, rect, 0, math.pi, line_width)
+        # Abstandsmarkierungen zeichnen
+        distance_markers = [100, 200, 300]
 
-    # Winkel definieren
-    angles = [0, math.pi/4, math.pi/2, 3*math.pi/4, math.pi]
-    angle_labels = ["0°", "45°", "90°", "135°", "180°"]
+        for dist in distance_markers:
+            marker_radius = dist * distance_scale
+            pygame.draw.arc(screen, GREEN, (center_x - marker_radius, center_y - marker_radius, marker_radius * 2, marker_radius *2), 0, math.pi, 1)
 
-    # Abstandsmarkierungen zeichnen
-    distance_markers = [100, 200, 300]
+            # Abstandsbeschriftung
+            text = font_small.render(f"{dist} cm", True, GREEN)
+            text_x = center_x - text.get_width() // 2
+            text_y = center_y - marker_radius - text.get_height() - 5
+            screen.blit(text, (text_x, text_y))
 
-    for dist in distance_markers:
-        marker_radius = dist * distance_scale
-        pygame.draw.arc(screen, GREEN, (center_x - marker_radius, center_y - marker_radius, marker_radius * 2, marker_radius *2), 0, math.pi, 1)
+        # Linien für jeden Winkel
+        for i, angle in enumerate(angles):
 
-        # Abstandsbeschriftung
-        text = font_small.render(f"{dist} cm", True, GREEN)
-        text_x = center_x - text.get_width() // 2
-        text_y = center_y - marker_radius - text.get_height() - 5
-        screen.blit(text, (text_x, text_y))
+            end_x = center_x + radius * math.cos(angle)
+            end_y = center_y - radius * math.sin(angle)
 
-    # Linien für jeden Winkel
-    for i, angle in enumerate(angles):
+            # Linien
+            pygame.draw.line(screen, GREEN, (center_x, center_y), (end_x, end_y), 1)
 
-        end_x = center_x + radius * math.cos(angle)
-        end_y = center_y - radius * math.sin(angle)
+            # Markierung der Linien mit dem Kreis
+            pygame.draw.circle(screen, GREEN, (int(end_x), int(end_y)), 2)
 
-        # Linien
-        pygame.draw.line(screen, GREEN, (center_x, center_y), (end_x, end_y), 1)
+            text = font.render(angle_labels[i], True, GREEN)
 
-        # Markierung der Linien mit dem Kreis
-        pygame.draw.circle(screen, GREEN, (int(end_x), int(end_y)), 2)
+            text_offset = 20
 
-        text = font.render(angle_labels[i], True, GREEN)
+            if angle == 0 or angle == math.pi:  # 0° oder 180°
+                text_x = end_x - text.get_width() // 2
+                text_y = end_y + text_offset
+            elif angle == math.pi/2:  # 90°
+                text_x = end_x - text.get_width() // 2
+                text_y = end_y - text_offset - text.get_height()
+            elif angle == math.pi/4:  # 45°
+                text_x = end_x + text_offset // 2
+                text_y = end_y - text_offset - text.get_height() // 2
+            else:  # 135°
+                text_x = end_x - text_offset - text.get_width()
+                text_y = end_y - text_offset - text.get_height() // 2
 
-        text_offset = 20
+            screen.blit(text, (text_x, text_y))
 
-        if angle == 0 or angle == math.pi:  # 0° oder 180°
-            text_x = end_x - text.get_width() // 2
-            text_y = end_y + text_offset
-        elif angle == math.pi/2:  # 90°
-            text_x = end_x - text.get_width() // 2
-            text_y = end_y - text_offset - text.get_height()
-        elif angle == math.pi/4:  # 45°
-            text_x = end_x + text_offset // 2
-            text_y = end_y - text_offset - text.get_height() // 2
-        else:  # 135°
-            text_x = end_x - text_offset - text.get_width()
-            text_y = end_y - text_offset - text.get_height() // 2
+        # Animation des Scanvorgangs
+        if scan_active:
+            # Wellen aktualisieren und zeichnen
+            new_waves = []
+            for wave in waves:
+                wave_radius, alpha = wave
 
-        screen.blit(text, (text_x, text_y))
+                # Halbkreis für die Welle zeichnen
+                wave_color = (0, 214, 35, alpha)
 
-    # Animation des Scanvorgangs
-    if scan_active:
-        # Wellen aktualisieren und zeichnen
-        new_waves = []
-        for wave in waves:
-            wave_radius, alpha = wave
+                # Transparente Surface für die Welle erstellen
+                wave_surface = pygame.Surface((wave_radius * 2, wave_radius * 2), pygame.SRCALPHA)
+                pygame.draw.arc(wave_surface, wave_color, (0, 0, wave_radius * 2, wave_radius * 2), 0, math.pi, 2)
 
-            # Halbkreis für die Welle zeichnen
-            wave_color = (0, 214, 35, alpha)
+                # Surface auf den Hauptbildschirm übertragen
+                screen.blit(wave_surface, (center_x - wave_radius, center_y - wave_radius))
 
-            # Transparente Surface für die Welle erstellen
-            wave_surface = pygame.Surface((wave_radius * 2, wave_radius * 2), pygame.SRCALPHA)
-            pygame.draw.arc(wave_surface, wave_color, (0, 0, wave_radius * 2, wave_radius * 2), 0, math.pi, 2)
+                wave_radius  += wave_speed
+                alpha_decrease = 2
+                alpha = max(0, alpha - alpha_decrease) # Welle wird transparenter
 
-            # Surface auf den Hauptbildschirm übertragen
-            screen.blit(wave_surface, (center_x - wave_radius, center_y - wave_radius))
+                # Welle beibehalten, wenn sie noch sichtbar ist
+                if wave_radius < radius:
+                    new_waves.append([wave_radius, alpha])
 
-            wave_radius  += wave_speed
-            alpha_decrease = 2
-            alpha = max(0, alpha - alpha_decrease) # Welle wird transparenter
+                # Wenn eine Welle die aktuelle Distanz erreicht
+                if abs(wave_radius - current_distance * distance_scale) < wave_speed and alpha > 150:
+                    # Erkennungswert im 90° Winkel (direkt nach oben)
+                    angle_rad = math.pi/2   # 90° in Radianten
+                    detected_point = (
+                        center_x + current_distance * distance_scale * math.cos(angle_rad),
+                        center_y - current_distance * distance_scale * math.sin(angle_rad)
+                    )
 
-            # Welle beibehalten, wenn sie noch sichtbar ist
-            if wave_radius < radius:
-                new_waves.append([wave_radius, alpha])
+            # Neue Welle zeichnen, falls nötig
+            if not waves or waves [0][0] > wave_interval:
+                new_waves.insert(0, [0, 255])
 
-            # Wenn eine Welle die aktuelle Distanz erreicht
-            if abs(wave_radius - current_distance * distance_scale) < wave_speed and alpha > 150:
-                # Erkennungswert im 90° Winkel (direkt nach oben)
-                angle_rad = math.pi/2   # 90° in Radianten
-                detected_point = (
-                    center_x + current_distance * distance_scale * math.cos(angle_rad),
-                    center_y - current_distance * distance_scale * math.sin(angle_rad)
-                )
+            waves = new_waves
 
-        # Neue Welle zeichnen, falls nötig
-        if not waves or waves [0][0] > wave_interval:
-            new_waves.insert(0, [0, 255])
+            # Erkanntes Objekt zeichnen
+            if detected_point:
+                pygame.draw.circle(screen, GREEN, (int(detected_point[0]), int(detected_point[1])), 8)
 
-        waves = new_waves
+            # Aktuelle Distanz anzeigen
+            distance_text = font.render(f"Distanz: {current_distance} cm", True, BLACK)
+            screen.blit(distance_text, (50, 50))
+        else:
+            # Anzeige, dass Scan pausiert ist
+            pause_text = font.render("Drücke LEERTASTE zum Scannen", True, GREEN)
+            screen.blit(pause_text, (50,50))
 
-        # Erkanntes Objekt zeichnen
-        if detected_point:
-            pygame.draw.circle(screen, GREEN, (int(detected_point[0]), int(detected_point[1])), 8)
+        # Mittelpunkt markieren
+        pygame.draw.circle(screen, GREEN, (center_x, center_y), 4)
 
-        # Aktuelle Distanz anzeigen
-        distance_text = font.render(f"Distanz: {current_distance} cm", True, BLACK)
-        screen.blit(distance_text, (50, 50))
-    else:
-        # Anzeige, dass Scan pausiert ist
-        pause_text = font.render("Drücke LEERTASTE zum Scannen", True, GREEN)
-        screen.blit(pause_text, (50,50))
+        pygame.display.flip()
+        clock.tick(60)
 
-    # Mittelpunkt markieren
-    pygame.draw.circle(screen, GREEN, (center_x, center_y), 4)
-
-    pygame.display.flip()
-    clock.tick(60)
-
-pygame.quit()
-sys.exit()
+except KeyboardInterrupt:
+    print("Programm beendet.")
+finally:
+    running = False
+    cleanup_gpio()
+    pygame.quit()
+    sys.exit()
