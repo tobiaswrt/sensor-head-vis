@@ -141,10 +141,11 @@ while run:
             screen.blit(wave_surface, (center_x - wave_radius, center_y - wave_radius))
 
             wave_radius  += wave_speed
-            alpha = max(0, alpha - 5) # Welle wird transparenter
+            alpha_decrease = 2
+            alpha = max(0, alpha - alpha_decrease) # Welle wird transparenter
 
             # Welle beibehalten, wenn sie noch sichtbar ist
-            if alpha > 0 and wave_radius < radius:
+            if wave_radius < radius:
                 new_waves.append([wave_radius, alpha])
 
             # Wenn eine Welle die aktuelle Distanz erreicht
