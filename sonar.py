@@ -56,22 +56,13 @@ while run:
 
         pygame.draw.circle(screen, GREEN, (int(end_x), int(end_y)), 2)
 
-        text = font.render(angle_labels[i], True, GREEN)
+        degrees = int(angle * 180 / math.pi)
 
-        text_offset = 25
+        text = font.render(f"{degrees}°", True, GREEN)
 
-        if angle == 0 or angle == math.pi:
-            text_x = end_x - text.get_width() // 2
-            text_y = end_y + text_offset
-        elif angle == math.pi/2:
-            text_x = end_x - text.get_width() // 2
-            text_y = end_y - text_offset - text.get_height()
-        elif angle == math.pi/4:
-            text_x = end_x - text.get_width() // 2
-            text_y = end_y - text_offset - text.get_height() // 2
-        else:
-            text_x = end_x - text_offset - text.get_width()
-            text_y = end_y - text_offset - text.get_width() // 2
+        text_offset = 20
+        text_x = center_x + (radius + text_offset) * math.cos(angle) - text.get_width() / 2
+        text_y = center_y + (radius + text_offset) * math.sin(angle) - text.get_width() / 2
 
         screen.blit(text, (text_x, text_y))
 
