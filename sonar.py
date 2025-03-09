@@ -52,15 +52,15 @@ while run:
         end_x = center_x + radius * math.cos(angle)
         end_y = center_y - radius * math.sin(angle)
 
+        # Linien
         pygame.draw.line(screen, GREEN, (center_x, center_y), (end_x, end_y), 1)
 
+        # Markierung der Linien mit dem Kreis
         pygame.draw.circle(screen, GREEN, (int(end_x), int(end_y)), 2)
 
-        degrees = int(angle * 180 / math.pi)
+        text = font.render(angle_labels[i], True, (0, 0, 0))
 
-        text = font.render(f"{degrees}°", True, GREEN)
-
-        text_offset = 25
+        text_offset = 20
 
         if angle == 0 or angle == math.pi:  # 0° oder 180°
             text_x = end_x - text.get_width() // 2
@@ -77,7 +77,7 @@ while run:
 
         screen.blit(text, (text_x, text_y))
 
-    pygame.draw.circle(screen, GREEN, (center_x, center_y), 2)
+    pygame.draw.circle(screen, GREEN, (center_x, center_y), 4)
 
     pygame.display.flip()
     clock.tick(60)
