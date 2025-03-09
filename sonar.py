@@ -219,7 +219,7 @@ try:
                 pygame.draw.circle(screen, GREEN, (int(detected_point[0]), int(detected_point[1])), 8)
 
             # Aktuelle Distanz anzeigen
-            distance_text = font.render(f"Distanz: {current_distance} cm", True, BLACK)
+            distance_text = font.render(f"Distanz: {current_distance} cm", True, GREEN)
             screen.blit(distance_text, (50, 50))
         else:
             # Anzeige, dass Scan pausiert ist
