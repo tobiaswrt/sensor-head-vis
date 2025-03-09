@@ -33,7 +33,7 @@ font_small = pygame.font.SysFont("Arial", 16)
 scan_active = False
 wave_radius = 0 # Radius der ausbreitenden Welle
 wave_speed = 2  # Geschwindigkeit der Welle
-max_distance = 400  # Maximale Entfernung in cm
+max_distance = 250  # Maximale Entfernung in cm
 distance_scale = radius / max_distance  # Skalierungsfaktor für die Anzeige
 
 waves = []  # Liste von [radius, alpha] für jede Welle
@@ -132,7 +132,7 @@ try:
         angle_labels = ["0°", "45°", "90°", "135°", "180°"]
 
         # Abstandsmarkierungen zeichnen
-        distance_markers = [100, 200, 300]
+        distance_markers = [50, 150, 250]
 
         for dist in distance_markers:
             marker_radius = dist * distance_scale
