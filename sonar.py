@@ -28,12 +28,12 @@ font_small = pygame.font.SysFont("Arial", 16)
 # Animations Parameter
 scan_active = False
 wave_radius = 0 # Radius der ausbreitenden Welle
-wave_speed = 5  # Geschwindigkeit der Welle
+wave_speed = 10  # Geschwindigkeit der Welle
 max_distance = 400  # Maximale Entfernung in cm
 distance_scale = radius / max_distance  # Skalierungsfaktor für die Anzeige
 
 waves = []  # Liste von [radius, alpha] für jede Welle
-wave_interval = 40  # Abstand zwischen den Wellen
+wave_interval = 80  # Abstand zwischen den Wellen
 
 # Simutlierter Wert (später durch echten HC-SR04 Wert ersetzen)
 current_distance = 150 # in cm
