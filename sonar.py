@@ -74,9 +74,7 @@ def measure_distance():
     # Durch 2 teilen, da Signal hin und zurück läuft
     distance = round(pulse_duration * 34300 / 2, 2)
 
-    if distance > max_distance:
-        distance = max_distance
-    elif distance < 0:
+    if distance < 0:
         distance = 0
 
     return distance
