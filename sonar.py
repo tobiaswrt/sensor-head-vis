@@ -12,7 +12,6 @@ screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("HC-SR04 Sonar Screen")
 
 GREEN = (0, 214, 35)
-GREEN_MUTED = (0, 214, 35, 0.5)
 BLACK = (0, 0, 0)
 
 clock = pygame.time.Clock()
@@ -128,14 +127,14 @@ while run:
         # Zeichne Scanlinie vom Mittelpunkt aus
         scan_end_x = center_x + radius * math.cos(scan_rad)
         scan_end_y = center_y - radius * math.sin(scan_rad)
-        pygame.draw.line(screen, GREEN_MUTED, (center_x, center_y), (scan_end_x, scan_end_y), 1)
+        pygame.draw.line(screen, GREEN, (center_x, center_y), (scan_end_x, scan_end_y), 1)
 
         # Puls Animation
         if scan_pulse_distance < radius:
             # Zeichne Puls als kleinen Kreis auf Scan Linie
             pulse_x = center_x + scan_pulse_distance * math.cos(scan_rad)
             pulse_y = center_y - scan_pulse_distance * math.sin(scan_rad)
-            pygame.draw.circle(screen, GREEN_MUTED, (int(pulse_x), int(pulse_y)), 1)
+            pygame.draw.circle(screen, GREEN, (int(pulse_x), int(pulse_y)), 4)
             scan_pulse_distance += pulse_speed
         else:
             # Wenn Puls Ende erreicht. akzuelle Distanz anzeigen
@@ -154,7 +153,7 @@ while run:
 
         # Aktuelle Distanz anzeigen
         distance_text = font.render(f"Distanz: {current_distance} cm", True, GREEN)
-        screen.blit(distance_text, (50,50))
+        screen.blit(distance_text, (50,100))
     else:
         # Anzeige, dass Scan pausiert ist
         pause_text = font.render("Drücke LEERTASTE zum Scannen", True, GREEN)
