@@ -53,7 +53,7 @@ while run:
 
         pygame.draw.line(screen, GREEN, (center_x, center_y), (end_x, end_y), 1)
 
-        pygame.draw.circle(screen, GREEN, (int(end_x)), int(end_y), 2)
+        pygame.draw.circle(screen, GREEN, (int(end_x), int(end_y)), 2)
 
         degrees = int(angle * 180 / math.pi)
 
