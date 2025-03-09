@@ -2,12 +2,7 @@ import pygame
 import sys
 
 # Initialisierung von Pygame
-<<<<<<< HEAD
 pygame.init()
-=======
-pygame.display.init()
-pygame.key.init()
->>>>>>> 5b1bc6b5551747a7505128e1c956a0ca99edd5c8
 
 screen = pygame.display.set_mode((1280, 720))
 pygame.display.set_caption("Schwarzer Bildschirm")
