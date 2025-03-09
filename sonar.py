@@ -131,7 +131,7 @@ while run:
             wave_radius, alpha = wave
 
             # Halbkreis für die Welle zeichnen
-            wave_color = (GREEN, alpha)
+            wave_color = (0, 214, 35, alpha)
 
             # Transparente Surface für die Welle erstellen
             wave_surface = pygame.Surface((wave_radius * 2, wave_radius * 2), pygame.SRCALPHA)
