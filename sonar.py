@@ -203,8 +203,8 @@ try:
                 if current_distance > 0 and abs(wave_radius - current_distance * distance_scale) < wave_speed and alpha > 150:
                     # Erkennungswert im 90° Winkel (direkt nach oben)
                     detected_point = (
-                        center_x + current_distance * distance_scale * math.cos(angle_rad),
-                        center_y - current_distance * distance_scale * math.sin(angle_rad)
+                        center_x + current_distance * distance_scale * math.cos(current_angle_rad),
+                        center_y - current_distance * distance_scale * math.sin(current_angle_rad)
                     )
 
             # Neue Welle zeichnen, falls nötig
