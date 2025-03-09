@@ -16,9 +16,9 @@ BLACK = (0, 0, 0)
 clock = pygame.time.Clock()
 
 center_x = SCREEN_WIDTH // 2
-center_y = SCREEN_HEIGHT // 2
+center_y = SCREEN_HEIGHT // 2 + SCREEN_HEIGHT // 4
 
-radius = min(SCREEN_WIDTH, SCREEN_HEIGHT) * 0.5
+radius = min(SCREEN_WIDTH, SCREEN_HEIGHT) * 0.45
 line_width = 2
 
 font = pygame.font.Font(None, 36)
@@ -57,7 +57,7 @@ while run:
 
         degrees = int(angle * 180 / math.pi)
 
-        text = font.render(f"{degrees} °", True, GREEN)
+        text = font.render(f"{degrees}°", True, GREEN)
 
         text_offset = 20
         text_x = center_x + (radius + text_offset) * math.cos(angle) - text.get_width() / 2
