@@ -58,7 +58,7 @@ while run:
         # Markierung der Linien mit dem Kreis
         pygame.draw.circle(screen, GREEN, (int(end_x), int(end_y)), 2)
 
-        text = font.render(angle_labels[i], True, (0, 0, 0))
+        text = font.render(angle_labels[i], True, GREEN)
 
         text_offset = 20
 
