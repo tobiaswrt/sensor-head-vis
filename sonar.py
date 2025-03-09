@@ -27,18 +27,19 @@ font_small = pygame.font.SysFont("Arial", 16)
 
 # Animations Parameter
 scan_active = False
-wave_radius = 0
-wave_speed = 5
-max_distance = 400
-distance_scale = radius / max_distance
+wave_radius = 0 # Radius der ausbreitenden Welle
+wave_speed = 5  # Geschwindigkeit der Welle
+max_distance = 400  # Maximale Entfernung in cm
+distance_scale = radius / max_distance  # Skalierungsfaktor für die Anzeige
 
-waves = []
-wave_interval = 40
+waves = []  # Liste von [radius, alpha] für jede Welle
+wave_interval = 40  # Abstand zwischen den Wellen
 
 # Simutlierter Wert (später durch echten HC-SR04 Wert ersetzen)
 current_distance = 150 # in cm
 detected_point = None
 
+# Hauptschleife
 run = True
 while run:
     for event in pygame.event.get():
@@ -124,41 +125,50 @@ while run:
 
     # Animation des Scanvorgangs
     if scan_active:
+        # Wellen aktualisieren und zeichnen
         new_waves = []
         for wave in waves:
             wave_radius, alpha = wave
 
-            wave_color = (0, 255, 255, alpha)
+            # Halbkreis für die Welle zeichnen
+            wave_color = (GREEN, alpha)
 
+            # Transparente Surface für die Welle erstellen
             wave_surface = pygame.Surface((wave_radius * 2, wave_radius * 2), pygame.SRCALPHA)
             pygame.draw.arc(wave_surface, wave_color, (0, 0, wave_radius * 2, wave_radius * 2), 0, math.pi, 2)
 
+            # Surface auf den Hauptbildschirm übertragen
             screen.blit(wave_surface, (center_x - wave_radius, center_y - wave_radius))
 
             wave_radius  += wave_speed
-            alpha = max(0, alpha - 5)
+            alpha = max(0, alpha - 5) # Welle wird transparenter
 
+            # Welle beibehalten, wenn sie noch sichtbar ist
             if alpha > 0 and wave_radius < radius:
                 new_waves.append([wave_radius, alpha])
 
+            # Wenn eine Welle die aktuelle Distanz erreicht
             if abs(wave_radius - current_distance * distance_scale) < wave_speed and alpha > 150:
-                angle_rad = math.pi/2
+                # Erkennungswert im 90° Winkel (direkt nach oben)
+                angle_rad = math.pi/2   # 90° in Radianten
                 detected_point = (
                     center_x + current_distance * distance_scale * math.cos(angle_rad),
                     center_y - current_distance * distance_scale * math.sin(angle_rad)
                 )
 
+        # Neue Welle zeichnen, falls nötig
         if not waves or waves [0][0] > wave_interval:
             new_waves.insert(0, [0, 255])
 
         waves = new_waves
 
+        # Erkanntes Objekt zeichnen
         if detected_point:
             pygame.draw.circle(screen, GREEN, (int(detected_point[0]), int(detected_point[1])), 8)
 
+        # Aktuelle Distanz anzeigen
         distance_text = font.render(f"Distanz: {current_distance} cm", True, BLACK)
         screen.blit(distance_text, (50, 50))
-
     else:
         # Anzeige, dass Scan pausiert ist
         pause_text = font.render("Drücke LEERTASTE zum Scannen", True, GREEN)
