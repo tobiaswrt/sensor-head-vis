@@ -1,9 +1,13 @@
 from functions import *
+from gpio_config import *
+import RPi.GPIO as GPIO
+import time
 import pygame
 import sys
 import math
 
-# Initialisierung von Pygame
+# Initialisierung
+init_gpio()
 pygame.init()
 
 SCREEN_WIDTH = 800
