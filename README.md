@@ -12,3 +12,4 @@ Das Ziel ist die Erstellung eines beweglichen Scanners der mit einer Visualisier
 
 # Aufbau
 [Ultraschall-Sensor-Schaltung_Steckplatine.pdf](https://github.com/user-attachments/files/19150460/Ultraschall-Sensor-Schaltung_Steckplatine.pdf)
+[Ultraschall-Sensor-Schaltung_Schaltplan.pdf](https://github.com/user-attachments/files/19150462/Ultraschall-Sensor-Schaltung_Schaltplan.pdf)
