@@ -60,9 +60,20 @@ while run:
 
         text = font.render(f"{degrees}°", True, GREEN)
 
-        text_offset = 20
-        text_x = center_x + (radius + text_offset) * math.cos(angle) - text.get_width() / 2
-        text_y = center_y + (radius + text_offset) * math.sin(angle) - text.get_width() / 2
+        text_offset = 25
+        
+        if angle == 0 or angle == math.pi:  # 0° oder 180°
+            text_x = end_x - text.get_width() // 2
+            text_y = end_y + text_offset
+        elif angle == math.pi/2:  # 90°
+            text_x = end_x - text.get_width() // 2
+            text_y = end_y - text_offset - text.get_height()
+        elif angle == math.pi/4:  # 45°
+            text_x = end_x + text_offset // 2
+            text_y = end_y - text_offset - text.get_height() // 2
+        else:  # 135°
+            text_x = end_x - text_offset - text.get_width()
+            text_y = end_y - text_offset - text.get_height() // 2
 
         screen.blit(text, (text_x, text_y))
 
