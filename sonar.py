@@ -45,6 +45,50 @@ detected_point = None
 
 running = True
 
+def measure_distance():
+    # Trigger-Puls senden
+    GPIO.output(TRIG, True)
+    time.sleep(0.00001)
+    GPIO.output(TRIG, False)
+
+    # Zeitmessung starten
+    pulse_start = time.time()
+    timeout = pulse_start + 0.1
+
+    # Warten bis Echo HIGH wird
+    while GPIO.input(ECHO) == 0 and time.time() < timeout:
+        pulse_start = time.time()
+
+    pulse_end = time.time()
+    timeout = pulse_end + 0.1
+
+    # Warten bis Echo wieder LOW wird
+    while GPIO.input(ECHO) == 1 and time.time() < timeout:
+        pulse_end = time.time()
+
+    # Berechnung Zeitdauer
+    pulse_duration = pulse_end - pulse_start
+
+    # Entfernung berechnen (Schallgeschwindigkeit = 34300 cm/s)
+    # Durch 2 teilen, da Signal hin und zurück läuft
+    distance = round(pulse_duration * 34300 / 2, 2)
+
+    if distance > max_distance:
+        distance = max_distance
+    elif distance < 0:
+        distance = 0
+
+    return distance
+
+def sensor_thread():
+    global current_distance, running, scan_active
+
+    while running:
+        if scan_active:
+            current_distance = measure_distance()
+            
+        time.sleep(0.05)
+
 # Hauptschleife
 try:
     init_gpio()
@@ -156,9 +200,8 @@ try:
                     new_waves.append([wave_radius, alpha])
 
                 # Wenn eine Welle die aktuelle Distanz erreicht
-                if abs(wave_radius - current_distance * distance_scale) < wave_speed and alpha > 150:
+                if current_distance > 0 and abs(wave_radius - current_distance * distance_scale) < wave_speed and alpha > 150:
                     # Erkennungswert im 90° Winkel (direkt nach oben)
-                    angle_rad = math.pi/2   # 90° in Radianten
                     detected_point = (
                         center_x + current_distance * distance_scale * math.cos(angle_rad),
                         center_y - current_distance * distance_scale * math.sin(angle_rad)
