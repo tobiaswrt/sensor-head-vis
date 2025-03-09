@@ -72,7 +72,7 @@ def measure_distance():
 
     # Entfernung berechnen (Schallgeschwindigkeit = 34300 cm/s)
     # Durch 2 teilen, da Signal hin und zurück läuft
-    distance = round(pulse_duration * 34300 / 2, 2)
+    distance = round(pulse_duration * 34300 / 2, 0)
 
     if distance < 0:
         distance = 0
