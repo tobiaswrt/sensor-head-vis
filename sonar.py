@@ -5,13 +5,21 @@ import math
 # Initialisierung von Pygame
 pygame.init()
 
-screen = pygame.display.set_mode((800, 600))
+SCREEN_WIDTH = 800
+SCREEN_HEIGHT = 600
+screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Sonar Bildschirm")
 
 GREEN = (0, 214, 35)
 BLACK = (0, 0, 0)
 
 clock = pygame.time.Clock()
+
+center_x = SCREEN_WIDTH // 2
+center_y = SCREEN_HEIGHT // 2
+
+radius = min(SCREEN_WIDTH, SCREEN_HEIGHT) * 0.45
+line_width = 4
 
 run = True
 while run:
@@ -25,11 +33,18 @@ while run:
     
     screen.fill(BLACK)
 
-    rect = [400, 300, 400, 400] # Bereich des Kreises (x, y, Breite, Höhe)
-    pygame.draw.arc(screen, GREEN, rect, 0, math.pi, 10) # Farbe, Startwinkel 0, Endwinkel π, Breite des Bogens
+    rect = pygame.Rect(
+        center_x - radius,
+        center_y - radius,
+        radius * 2,
+        radius * 2
+    )
+
+    pygame.draw.arc(screen, GREEN, rect, 0, math.pi, line_width)
+
+    pygame.draw.circle(screen, GREEN, (center_x, center_y), 2)
 
     pygame.display.flip()
-
     clock.tick(60)
 
 pygame.quit()
