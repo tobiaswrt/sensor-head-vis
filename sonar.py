@@ -21,7 +21,7 @@ center_y = SCREEN_HEIGHT // 2 + SCREEN_HEIGHT // 4
 radius = min(SCREEN_WIDTH, SCREEN_HEIGHT) * 0.45
 line_width = 2
 
-font = pygame.font.Font(None, 36)
+font = pygame.font.SysFont("Arial", 16)
 
 run = True
 while run:
@@ -61,7 +61,7 @@ while run:
         text = font.render(f"{degrees}°", True, GREEN)
 
         text_offset = 25
-        
+
         if angle == 0 or angle == math.pi:  # 0° oder 180°
             text_x = end_x - text.get_width() // 2
             text_y = end_y + text_offset
