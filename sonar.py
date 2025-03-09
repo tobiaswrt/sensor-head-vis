@@ -33,7 +33,7 @@ max_distance = 400  # Maximale Entfernung in cm
 distance_scale = radius / max_distance  # Skalierungsfaktor für die Anzeige
 
 waves = []  # Liste von [radius, alpha] für jede Welle
-wave_interval = 10  # Abstand zwischen den Wellen
+wave_interval = 80  # Abstand zwischen den Wellen
 
 # Simutlierter Wert (später durch echten HC-SR04 Wert ersetzen)
 current_distance = 150 # in cm
