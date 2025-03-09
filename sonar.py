@@ -6,7 +6,7 @@ import math
 pygame.init()
 
 SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
+SCREEN_HEIGHT = 500
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Sonar Bildschirm")
 
@@ -18,7 +18,7 @@ clock = pygame.time.Clock()
 center_x = SCREEN_WIDTH // 2
 center_y = SCREEN_HEIGHT // 2
 
-radius = min(SCREEN_WIDTH, SCREEN_HEIGHT) * 0.7
+radius = min(SCREEN_WIDTH, SCREEN_HEIGHT) * 0.5
 line_width = 2
 
 run = True
