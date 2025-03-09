@@ -57,7 +57,7 @@ while run:
             if event.key == pygame.K_UP:
                 current_distance = min(current_distance + 10, max_distance)
             if event.key == pygame.K_DOWN:
-                current_distance = max(current_distance - 10, max_distance)
+                current_distance = max(current_distance - 10, 0)
 
     
     screen.fill(BLACK)
