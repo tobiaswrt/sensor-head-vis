@@ -203,6 +203,8 @@ try:
                 # Wenn eine Welle die aktuelle Distanz erreicht
                 if current_distance > 0 and abs(wave_radius - current_distance * distance_scale) < wave_speed and alpha > 150:
                     # Erkennungswert im 90° Winkel (direkt nach oben)
+                    display_distance = min(current_distance, max_distance)
+
                     detected_point = (
                         center_x + current_distance * distance_scale * math.cos(current_angle_rad),
                         center_y - current_distance * distance_scale * math.sin(current_angle_rad)
