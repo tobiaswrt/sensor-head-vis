@@ -192,7 +192,7 @@ try:
                 # Surface auf den Hauptbildschirm übertragen
                 screen.blit(wave_surface, (center_x - wave_radius, center_y - wave_radius))
 
-                wave_radius  += wave_speed
+                wave_radius += wave_speed
                 alpha_decrease = 2
                 alpha = max(0, alpha - alpha_decrease) # Welle wird transparenter
 
@@ -200,24 +200,25 @@ try:
                 if wave_radius < radius:
                     new_waves.append([wave_radius, alpha])
 
-                # Wenn eine Welle die aktuelle Distanz erreicht
-                if current_distance > 0 and abs(wave_radius - current_distance * distance_scale) < wave_speed and alpha > 150:
-                    # Erkennungswert im 90° Winkel (direkt nach oben)
-                    display_distance = min(current_distance, max_distance)
-
-                    detected_point = (
-                        center_x + current_distance * distance_scale * math.cos(current_angle_rad),
-                        center_y - current_distance * distance_scale * math.sin(current_angle_rad)
-                    )
-
             # Neue Welle zeichnen, falls nötig
-            if not waves or waves [0][0] > wave_interval:
+            if not waves or waves[0][0] > wave_interval:
                 new_waves.insert(0, [0, 255])
 
             waves = new_waves
 
-            # Erkanntes Objekt zeichnen
-            if detected_point:
+            # Erkannten Punkt DIREKT basierend auf der aktuellen Distanz zeichnen,
+            # unabhängig von den Wellen
+            if current_distance > 0:
+                # Für die Anzeige auf max_distance begrenzen
+                display_distance = min(current_distance, max_distance)
+                
+                # Punkt berechnen
+                detected_point = (
+                    center_x + display_distance * distance_scale * math.cos(current_angle_rad),
+                    center_y - display_distance * distance_scale * math.sin(current_angle_rad)
+                )
+                
+                # Punkt zeichnen
                 pygame.draw.circle(screen, GREEN, (int(detected_point[0]), int(detected_point[1])), 8)
 
             # Aktuelle Distanz anzeigen
